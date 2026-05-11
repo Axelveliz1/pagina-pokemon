@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Pokedex</title>
+
+  <link rel="stylesheet" href="pagina pokemon.css">
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h1>Pokedex</h1>
+
+    <input 
+      type="text" 
+      id="busqueda" 
+      
+    >
+
+    <div class="botones">
+
+      <button onclick="buscar()">
+        Buscar
+      </button>
+
+      <button onclick="anterior()">
+        Anterior
+      </button>
+
+      <button onclick="siguiente()">
+        Siguiente
+      </button>
+
+    </div>
+
+    <h2 id="nombre"></h2>
+
+    <img id="imagen" src="">
+
+     
+
+  </div>
+
+  <script>
+
+    const URL = "https://pokeapi.co/api/v2/pokemon/";
+
+    let pokemonActual = 1;
+
+    async function cargarpokemon(valor){
+
+      const nombre = document.getElementById("nombre");
+      const foto = document.getElementById("imagen");
+      
+      const input = document.getElementById("busqueda");
+
+      nombre.textContent = "";
+      foto.src = "";
+     
+
+   
+        const respuesta = await fetch(URL + valor);
+
+        const data = await respuesta.json();
+
+        pokemonActual = data.id;
+
+        nombre.textContent =
+          `${data.id} - ${data.name.toUpperCase()}`;
+
+        foto.src = data.sprites.front_default;
+
+        foto.alt = data.name;
+
+        input.value = data.name;
+
+      
+    }
+
+    function buscar(){
+
+      const busqueda = document
+        .getElementById("busqueda")
+        .value
+        .trim()
+        .toLowerCase();
+
+      if(busqueda === ""){
+
+        document.getElementById("error").textContent =
+          "Ingresá un nombre o número";
+
+        return;
+      }
+
+      cargarpokemon(busqueda);
+    }
+
+    function siguiente(){
+
+      pokemonActual++;
+
+      cargarpokemon(pokemonActual);
+    }
+
+    function anterior(){
+
+      if(pokemonActual > 1){
+
+        pokemonActual--;
+
+        cargarpokemon(pokemonActual);
+      }
+    }
+
+    cargarpokemon(1);
+
+  </script>
+
+</body>
+</html>
